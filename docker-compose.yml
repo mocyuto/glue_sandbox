@@ -1,0 +1,38 @@
+version: '3.5'
+services:
+  glue.dev.summary:
+    container_name: glue.dev
+    build:
+      context: ./
+      dockerfile: ./docker/Dockerfile
+    volumes:
+      # jupyterlabのdefaultのWorkspaceにlocalファイルをマウントします。
+      - ./workspace:/opt/jupyter/workspace
+      - ./glue_jars:/opt/aws-glue-libs/jarsv1
+      - ./.m2:/root/.m2
+      # - $HOME/.aws:/home/jupyte
+    environment:
+      - AWS_DEFAULT_REGION=ap-northeast-1
+      - AWS_DEFAULT_OUTPUT=json
+      - AWS_ACCESS_KEY_ID=xxx
+      - AWS_SECRET_ACCESS_KEY=xxx
+    ports:
+      # jupyterlabのポート
+      - 8888:8888
+      # spark uiのポート
+      - 4040:4040
+    networks:
+      - glue.dev.network
+    command: /bin/sh -c "cp /opt/spark/jars/* /opt/aws-glue-libs/jarsv1/ && /opt/aws-glue-libs/bin/gluepyspark"
+  glue.dev.s3.local:
+    image: localstack/localstack:0.12.8
+    environment:
+      - SERVICES=s3
+      # dummy configure
+    ports:
+      - 4566:4566
+    networks:
+      - glue.dev.network
+networks:
+  glue.dev.network:
+    name: glue.dev.network
