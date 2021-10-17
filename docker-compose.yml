@@ -23,7 +23,7 @@ services:
       - 4040:4040
     networks:
       - glue.dev.network
-    command: /bin/sh -c "cp /opt/spark/jars/* /opt/aws-glue-libs/jarsv1/ && /opt/aws-glue-libs/bin/gluepyspark"
+    command: /bin/sh -c "cp /opt/spark/jars/netty-all-4.1.51.Final.jar /opt/aws-glue-libs/jarsv1/ && /opt/aws-glue-libs/bin/gluepyspark"
   glue.dev.s3.local:
     image: localstack/localstack:0.12.8
     environment:
